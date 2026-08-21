@@ -328,7 +328,6 @@
   lightbox.addEventListener("click", function(e){
     if(e.target === lightbox) closeOverlay(lightbox);
   });
-  document.getElementById("confirmClose").addEventListener("click", function(){ closeOverlay(confirmOverlay); });
   document.getElementById("confirmLater").addEventListener("click", function(){ closeOverlay(confirmOverlay); });
   document.getElementById("confirmSend").addEventListener("click", function(){
     if(lastMailto) window.location.href = lastMailto;
