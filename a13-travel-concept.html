@@ -167,6 +167,12 @@
     font-size:.95rem;color:var(--ink);background:var(--white);
   }
   .field input:focus{outline:2px solid var(--blue-mid);outline-offset:1px;border-color:var(--blue-mid);}
+  .field input.field-readonly{cursor:pointer;background:var(--white);}
+  .field input.field-readonly::placeholder{color:#9a9a9a;}
+  .search-hint{
+    color:#dbe8fb;font-size:.78rem;margin:10px 2px 0;text-align:center;
+  }
+  @media(min-width:680px){.search-hint{text-align:left;}}
   .btn-primary{
     background:var(--blue-mid);color:var(--white);border:none;
     padding:12px 22px;border-radius:6px;font-weight:700;font-size:.95rem;cursor:pointer;
@@ -250,7 +256,7 @@
 
   /* CALENDAR */
   .calendar-wrap{
-    background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--white);border-radius:var(--radius);
     padding:24px;box-shadow:var(--shadow);
   }
   .cal-status{
@@ -305,6 +311,9 @@
     width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:6px;font-size:.92rem;
   }
   .form-field input:focus{outline:2px solid var(--blue-mid);outline-offset:1px;border-color:var(--blue-mid);}
+  .form-field input.field-readonly{cursor:pointer;background:var(--bg);}
+  .hint-link{color:var(--blue-mid);font-weight:700;text-decoration:underline;}
+  .calendar-wrap.pulse{}
   .form-field small{color:var(--gray);font-size:.75rem;}
   .hint{font-size:.78rem;color:var(--gray);margin-top:-6px;margin-bottom:14px;}
   .submit-row{margin-top:6px;}
@@ -340,6 +349,33 @@
     font-weight:700;font-size:.9rem;padding:11px 20px;border-radius:6px;
   }
   .map-directions:hover{background:var(--blue-hover);}
+
+  /* POPUP CALENDAR MODAL */
+  .popup-overlay{
+    display:none;position:fixed;inset:0;z-index:200;
+    background:rgba(9,25,50,.55);
+    align-items:flex-start;justify-content:center;
+    padding:16px;overflow-y:auto;
+  }
+  .popup-overlay.open{display:flex;}
+  .popup-box{
+    background:var(--bg);border-radius:12px;
+    max-width:640px;width:100%;margin:24px 0;
+    box-shadow:var(--shadow-lg);
+    max-height:calc(100vh - 48px);overflow-y:auto;
+  }
+  .popup-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 20px;background:var(--blue-dark);color:var(--white);
+    border-radius:12px 12px 0 0;position:sticky;top:0;z-index:1;
+  }
+  .popup-head h3{margin:0;font-size:1.05rem;}
+  .popup-close{
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    color:var(--white);width:32px;height:32px;border-radius:6px;
+    cursor:pointer;font-size:1rem;line-height:1;
+  }
+  .popup-box .calendar-wrap{box-shadow:none;border-radius:0 0 12px 12px;}
 
   /* TRUST STRIP */
   .trust{background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
@@ -410,14 +446,15 @@
     <div class="search-card" aria-label="Verifică disponibilitate rapid">
       <div class="field">
         <label for="quickCheckin">Check-in</label>
-        <input type="date" id="quickCheckin">
+        <input type="text" id="quickCheckin" class="field-readonly" placeholder="Alege data" readonly>
       </div>
       <div class="field">
         <label for="quickCheckout">Check-out</label>
-        <input type="date" id="quickCheckout">
+        <input type="text" id="quickCheckout" class="field-readonly" placeholder="Alege data" readonly>
       </div>
-      <button class="btn-primary" id="quickCheckBtn" type="button">Verifică disponibilitatea</button>
+      <button class="btn-primary" id="quickCheckBtn" type="button">Alege datele în calendar</button>
     </div>
+    <p class="search-hint" id="searchHint">Datele ocupate sunt blocate automat — nu ai nevoie de alt calendar.</p>
   </div>
 </section>
 
@@ -624,7 +661,17 @@
 <section id="disponibilitate" style="background:var(--white);border-top:1px solid var(--line);">
   <div class="wrap">
     <h2 class="section-title">Disponibilitate</h2>
-    <p class="section-sub">Calendarul este sincronizat automat cu rezervările existente. Zilele marcate ca ocupate nu pot fi selectate.</p>
+    <p class="section-sub">Calendarul este sincronizat automat cu rezervările existente. Zilele ocupate sunt blocate automat — alege datele direct din calendar.</p>
+    <button type="button" class="btn-primary" id="openCalBtn">📅 Alege datele sejurului</button>
+  </div>
+</section>
+
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-box">
+    <div class="popup-head">
+      <h3>Alege datele sejurului</h3>
+      <button type="button" class="popup-close" id="popupClose" aria-label="Închide">✕</button>
+    </div>
 
     <div class="calendar-wrap">
       <div class="cal-status" id="calStatus"><span class="dot"></span> Se încarcă disponibilitatea din calendar…</div>
@@ -644,7 +691,7 @@
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <section id="harta" style="background:var(--white);border-top:1px solid var(--line);">
   <div class="wrap">
@@ -692,14 +739,14 @@
         <div class="form-row">
           <div class="form-field">
             <label for="fcheckin">Check-in</label>
-            <input type="date" id="fcheckin" name="checkin" required>
+            <input type="text" id="fcheckin" name="checkin" class="field-readonly" placeholder="Alege data din calendar" readonly required>
           </div>
           <div class="form-field">
             <label for="fcheckout">Check-out</label>
-            <input type="date" id="fcheckout" name="checkout" required>
+            <input type="text" id="fcheckout" name="checkout" class="field-readonly" placeholder="Alege data din calendar" readonly required>
           </div>
         </div>
-        <p class="hint" id="rangeHint">Selectează datele fie mai sus, fie direct din calendarul de disponibilitate.</p>
+        <p class="hint" id="rangeHint">Alege datele direct din <a href="#disponibilitate" class="hint-link">calendarul de disponibilitate</a> de mai sus — zilele ocupate sunt blocate automat.</p>
 
         <div class="submit-row">
           <button type="submit" class="btn-primary">Trimite solicitarea de rezervare</button>
@@ -768,61 +815,10 @@
   /* ---------- CONFIG ---------- */
   var PRICE_PER_NIGHT = 800;
   var CONTACT_EMAIL = "mircea.george.vulcanescu@gmail.com";
-  var CALENDAR_ID = "ch4cifvuu7agfajplgrccculheveu7g6@import.calendar.google.com";
-  var ICS_URL = "https://calendar.google.com/calendar/ical/" + encodeURIComponent(CALENDAR_ID) + "/public/basic.ics";
-  // Lista de proxy-uri CORS încercate în ordine (Google nu trimite headere CORS pe .ics).
-  var PROXY_URLS = [
-    "https://api.allorigins.win/raw?url=" + encodeURIComponent(ICS_URL),
-    "https://corsproxy.io/?url=" + encodeURIComponent(ICS_URL),
-    "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(ICS_URL)
-  ];
+  var BOOKED_JSON = "booked-dates.json"; // generat periodic de update-calendar.js
 
   var bookedRanges = []; // [{start:Date, end:Date}] end este exclusiv (ca in ICS)
   var calStatusEl = document.getElementById("calStatus");
-
-  /* ---------- ICS FETCH + PARSE ---------- */
-  function parseICSDate(raw){
-    raw = raw.trim();
-    if(/^\d{8}$/.test(raw)){
-      var y=+raw.slice(0,4), m=+raw.slice(4,6)-1, d=+raw.slice(6,8);
-      return new Date(y,m,d);
-    }
-    var m2 = raw.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/);
-    if(m2){
-      return new Date(Date.UTC(+m2[1], +m2[2]-1, +m2[3], +m2[4], +m2[5], +m2[6]));
-    }
-    return null;
-  }
-
-  function parseICS(text){
-    var lines = text.split(/\r\n|\n|\r/);
-    // unfold: liniile care incep cu spatiu continua linia anterioara
-    var unfolded = [];
-    for(var i=0;i<lines.length;i++){
-      if(lines[i].charAt(0) === " " && unfolded.length){
-        unfolded[unfolded.length-1] += lines[i].slice(1);
-      } else {
-        unfolded.push(lines[i]);
-      }
-    }
-    var ranges = [];
-    var cur = null;
-    for(var j=0;j<unfolded.length;j++){
-      var line = unfolded[j];
-      if(line.indexOf("BEGIN:VEVENT") === 0){ cur = {}; continue; }
-      if(line.indexOf("END:VEVENT") === 0){
-        if(cur && cur.start && cur.end){ ranges.push({start:cur.start, end:cur.end}); }
-        cur = null; continue;
-      }
-      if(!cur) continue;
-      if(line.indexOf("DTSTART") === 0){
-        var vs = line.split(":"); cur.start = parseICSDate(vs[vs.length-1]);
-      } else if(line.indexOf("DTEND") === 0){
-        var ve = line.split(":"); cur.end = parseICSDate(ve[ve.length-1]);
-      }
-    }
-    return ranges;
-  }
 
   function setStatus(msg, isError){
     calStatusEl.innerHTML = '<span class="dot"></span> ' + msg;
@@ -830,28 +826,22 @@
   }
 
   function loadCalendar(){
-    tryProxy(0);
-  }
-
-  function tryProxy(index){
-    if(index >= PROXY_URLS.length){
-      setStatus("Nu am putut sincroniza automat calendarul Google chiar acum. Poți totuși trimite o solicitare — disponibilitatea va fi confirmată manual prin email.", true);
-      renderCalendar();
-      return;
-    }
-    fetch(PROXY_URLS[index], {cache:"no-store"})
+    fetch(BOOKED_JSON, {cache:"no-store"})
       .then(function(res){
-        if(!res.ok) throw new Error("network");
-        return res.text();
+        if(!res.ok) throw new Error("missing");
+        return res.json();
       })
-      .then(function(text){
-        if(text.indexOf("BEGIN:VCALENDAR") === -1) throw new Error("format");
-        bookedRanges = parseICS(text);
-        setStatus("Calendar sincronizat — disponibilitatea este la zi.", false);
+      .then(function(data){
+        bookedRanges = (data.ranges || []).map(function(r){
+          return { start:new Date(r.start), end:new Date(r.end) };
+        });
+        var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString("ro-RO") : null;
+        setStatus(updated ? "Disponibilitate actualizată: " + updated : "Disponibilitate încărcată.", false);
         renderCalendar();
       })
       .catch(function(){
-        tryProxy(index + 1);
+        setStatus("Nu am găsit fișierul de disponibilitate. Rulează update-calendar.js pentru a-l genera.", true);
+        renderCalendar();
       });
   }
 
@@ -967,6 +957,13 @@
     }
     syncFormFromSelection();
     renderCalendar();
+
+    if(selection.checkin && selection.checkout){
+      setTimeout(function(){
+        closePopup();
+        document.getElementById("rezervare").scrollIntoView({behavior:"smooth", block:"start"});
+      }, 450);
+    }
   }
 
   document.getElementById("calPrev").addEventListener("click", function(){
@@ -978,13 +975,17 @@
     renderCalendar();
   });
 
-  /* ---------- FORM SYNC + PRICE ---------- */
+  /* ---------- FORM SYNC + PRICE (calendarul este singura sursă de adevăr) ---------- */
   var inCheckin = document.getElementById("fcheckin");
   var inCheckout = document.getElementById("fcheckout");
   var quickCheckin = document.getElementById("quickCheckin");
   var quickCheckout = document.getElementById("quickCheckout");
   var summaryBody = document.getElementById("summaryBody");
   var rangeHint = document.getElementById("rangeHint");
+  var calendarWrap = document.querySelector(".calendar-wrap");
+  var popupOverlay = document.getElementById("popupOverlay");
+  var popupClose = document.getElementById("popupClose");
+  var openCalBtn = document.getElementById("openCalBtn");
 
   function fmtDate(d){
     return d.toLocaleDateString("ro-RO", { day:"2-digit", month:"short", year:"numeric" });
@@ -995,19 +996,50 @@
     return d.getFullYear()+"-"+mm+"-"+dd;
   }
 
+  function openPopup(){
+    popupOverlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    renderCalendar();
+  }
+  function closePopup(){
+    popupOverlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  [quickCheckin, quickCheckout, inCheckin, inCheckout].forEach(function(el){
+    el.addEventListener("click", openPopup);
+    el.addEventListener("focus", openPopup);
+  });
+  document.getElementById("quickCheckBtn").addEventListener("click", openPopup);
+  openCalBtn.addEventListener("click", openPopup);
+  popupClose.addEventListener("click", closePopup);
+  popupOverlay.addEventListener("click", function(e){
+    if(e.target === popupOverlay) closePopup();
+  });
+  rangeHint.addEventListener("click", function(e){
+    if(e.target.tagName === "A"){ e.preventDefault(); openPopup(); }
+  });
+
   function syncFormFromSelection(){
-    if(selection.checkin) inCheckin.value = toInputValue(selection.checkin);
-    if(selection.checkout) inCheckout.value = toInputValue(selection.checkout);
+    quickCheckin.value = selection.checkin ? fmtDate(selection.checkin) : "";
+    quickCheckin.dataset.iso = selection.checkin ? toInputValue(selection.checkin) : "";
+    quickCheckout.value = selection.checkout ? fmtDate(selection.checkout) : "";
+    quickCheckout.dataset.iso = selection.checkout ? toInputValue(selection.checkout) : "";
+
+    inCheckin.value = selection.checkin ? fmtDate(selection.checkin) : "";
+    inCheckin.dataset.iso = selection.checkin ? toInputValue(selection.checkin) : "";
+    inCheckout.value = selection.checkout ? fmtDate(selection.checkout) : "";
+    inCheckout.dataset.iso = selection.checkout ? toInputValue(selection.checkout) : "";
+
     updateSummary();
   }
 
   function updateSummary(){
-    var ci = inCheckin.value ? new Date(inCheckin.value + "T00:00:00") : null;
-    var co = inCheckout.value ? new Date(inCheckout.value + "T00:00:00") : null;
+    var ci = selection.checkin, co = selection.checkout;
 
     if(!ci || !co || co <= ci){
       summaryBody.innerHTML = '<p class="summary-empty">Alege datele de check-in și check-out pentru a vedea prețul total.</p>';
-      rangeHint.textContent = "Selectează datele fie mai sus, fie direct din calendarul de disponibilitate.";
+      rangeHint.innerHTML = 'Alege datele direct din <a href="#disponibilitate" class="hint-link">calendarul de disponibilitate</a> de mai sus — zilele ocupate sunt blocate automat.';
       rangeHint.style.color = "";
       return;
     }
@@ -1031,23 +1063,7 @@
     }
   }
 
-  inCheckin.addEventListener("change", function(){
-    selection.checkin = inCheckin.value ? new Date(inCheckin.value+"T00:00:00") : null;
-    updateSummary(); renderCalendar();
-  });
-  inCheckout.addEventListener("change", function(){
-    selection.checkout = inCheckout.value ? new Date(inCheckout.value+"T00:00:00") : null;
-    updateSummary(); renderCalendar();
-  });
-
-  document.getElementById("quickCheckBtn").addEventListener("click", function(){
-    if(quickCheckin.value) inCheckin.value = quickCheckin.value;
-    if(quickCheckout.value) inCheckout.value = quickCheckout.value;
-    selection.checkin = inCheckin.value ? new Date(inCheckin.value+"T00:00:00") : null;
-    selection.checkout = inCheckout.value ? new Date(inCheckout.value+"T00:00:00") : null;
-    document.getElementById("rezervare").scrollIntoView({behavior:"smooth"});
-    updateSummary(); renderCalendar();
-  });
+  syncFormFromSelection();
 
   /* ---------- SUBMIT (mailto) ---------- */
   document.getElementById("bookingForm").addEventListener("submit", function(e){
@@ -1055,15 +1071,14 @@
     var name = document.getElementById("fname").value.trim();
     var phone = document.getElementById("fphone").value.trim();
     var email = document.getElementById("femail").value.trim();
-    var ci = inCheckin.value, co = inCheckout.value;
+    var ciDate = selection.checkin, coDate = selection.checkout;
     var msgEl = document.getElementById("formMsg");
 
-    if(!name || !phone || !email || !ci || !co){
-      msgEl.textContent = "Completează toate câmpurile pentru a trimite solicitarea.";
+    if(!name || !phone || !email || !ciDate || !coDate){
+      msgEl.textContent = "Completează toate câmpurile și alege datele din calendar pentru a trimite solicitarea.";
       msgEl.className = "form-msg show warn";
       return;
     }
-    var ciDate = new Date(ci+"T00:00:00"), coDate = new Date(co+"T00:00:00");
     if(coDate <= ciDate){
       msgEl.textContent = "Data de check-out trebuie să fie după data de check-in.";
       msgEl.className = "form-msg show warn";
@@ -1075,6 +1090,7 @@
       return;
     }
 
+    var ci = toInputValue(ciDate), co = toInputValue(coDate);
     var nights = Math.round((coDate - ciDate) / 86400000);
     var total = nights * PRICE_PER_NIGHT;
 
@@ -1095,6 +1111,7 @@
       "&body=" + encodeURIComponent(body);
 
     window.location.href = mailto;
+
 
     msgEl.textContent = "Se deschide clientul tău de email cu solicitarea precompletată către " + CONTACT_EMAIL + ". Trimite mesajul pentru a finaliza cererea.";
     msgEl.className = "form-msg show ok";
@@ -1119,6 +1136,10 @@
         if(e.stopImmediatePropagation) e.stopImmediatePropagation();
         mobileNav.classList.remove("open");
         menuToggle.setAttribute("aria-expanded", "false");
+        if(id === "disponibilitate"){
+          openPopup();
+          return;
+        }
         target.scrollIntoView({behavior:"smooth", block:"start"});
       }
     }, true);
