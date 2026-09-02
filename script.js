@@ -336,6 +336,127 @@
     }, true);
   });
 
+  /* ---------- GALERIE FOTO ---------- */
+  var GALLERY = [
+    { key:"living",             label:"Living, luat masa & bucătărie", max:8 },
+    { key:"dormitor-mare",      label:"Dormitor mare",                 max:8 },
+    { key:"baie-mare",          label:"Baie – dormitor mare",          max:6 },
+    { key:"dormitor-mic",       label:"Dormitor mic",                  max:8 },
+    { key:"baie-mic",           label:"Baie – dormitor mic",           max:6 },
+    { key:"terasa-living",      label:"Terasă living",                 max:6 },
+    { key:"terasa-dormitoare",  label:"Terasă dormitoare",             max:6 }
+  ];
+  var galFound = {}; // key -> array de src incarcate cu succes
+  var galTabsEl = document.getElementById("galTabs");
+  var galGridEl = document.getElementById("galGrid");
+  var activeCat = GALLERY[0].key;
+
+  function imgSrc(key, i){ return "images/" + key + "/" + i + ".jpg"; }
+
+  GALLERY.forEach(function(cat){
+    galFound[cat.key] = [];
+
+    var tab = document.createElement("button");
+    tab.type = "button"; tab.className = "gal-tab" + (cat.key === activeCat ? " active" : "");
+    tab.textContent = cat.label;
+    tab.addEventListener("click", function(){ setActiveCat(cat.key); });
+    galTabsEl.appendChild(tab);
+
+    var panel = document.createElement("div");
+    panel.className = "gal-panel" + (cat.key === activeCat ? " active" : "");
+    panel.id = "gal-panel-" + cat.key;
+    galGridEl.appendChild(panel);
+
+    for(var i=1;i<=cat.max;i++){
+      (function(catKey, index){
+        var thumb = document.createElement("div");
+        thumb.className = "gal-thumb";
+        var img = document.createElement("img");
+        img.src = imgSrc(catKey, index);
+        img.alt = cat.label + " " + index;
+        img.loading = "lazy";
+        img.onload = function(){
+          galFound[catKey].push(img.src);
+          thumb.addEventListener("click", function(){
+            openLightbox(catKey, galFound[catKey].indexOf(img.src));
+          });
+        };
+        img.onerror = function(){ thumb.remove(); checkEmpty(catKey); };
+        thumb.appendChild(img);
+        document.getElementById("gal-panel-" + catKey).appendChild(thumb);
+      })(cat.key, i);
+    }
+  });
+
+  function checkEmpty(key){
+    var panel = document.getElementById("gal-panel-" + key);
+    if(panel.children.length === 0){
+      var empty = document.createElement("div");
+      empty.className = "gal-empty";
+      empty.innerHTML = "Adaugă poze în <code>images/" + key + "/1.jpg</code>, <code>2.jpg</code>… (până la " +
+        (GALLERY.find(function(c){return c.key===key;}).max) + ")";
+      panel.appendChild(empty);
+    }
+  }
+
+  function setActiveCat(key){
+    activeCat = key;
+    galTabsEl.querySelectorAll(".gal-tab").forEach(function(t,idx){
+      t.classList.toggle("active", GALLERY[idx].key === key);
+    });
+    galGridEl.querySelectorAll(".gal-panel").forEach(function(p){
+      p.classList.toggle("active", p.id === "gal-panel-" + key);
+    });
+  }
+
+  document.getElementById("openGalleryBtn").addEventListener("click", function(){
+    document.getElementById("galerie").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+
+  /* Hero preview: prima poza gasita din prima categorie disponibila */
+  var heroImg = document.querySelector("#galleryHero img");
+  heroImg.addEventListener("load", function(){}, {once:true});
+
+  /* LIGHTBOX */
+  var lightbox = document.getElementById("lightbox");
+  var lightboxImg = document.getElementById("lightboxImg");
+  var lightboxTitle = document.getElementById("lightboxTitle");
+  var lightboxCounter = document.getElementById("lightboxCounter");
+  var lbCat = null, lbIndex = 0;
+
+  function openLightbox(key, index){
+    lbCat = key; lbIndex = index;
+    renderLightbox();
+    lightbox.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function renderLightbox(){
+    var list = galFound[lbCat];
+    lightboxImg.src = list[lbIndex];
+    lightboxTitle.textContent = GALLERY.find(function(c){return c.key===lbCat;}).label;
+    lightboxCounter.textContent = (lbIndex+1) + " / " + list.length;
+  }
+  document.getElementById("lightboxClose").addEventListener("click", function(){
+    lightbox.classList.remove("open");
+    document.body.style.overflow = "";
+  });
+  lightbox.addEventListener("click", function(e){
+    if(e.target === lightbox){
+      lightbox.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+  });
+  document.getElementById("lightboxPrev").addEventListener("click", function(){
+    var list = galFound[lbCat];
+    lbIndex = (lbIndex - 1 + list.length) % list.length;
+    renderLightbox();
+  });
+  document.getElementById("lightboxNext").addEventListener("click", function(){
+    var list = galFound[lbCat];
+    lbIndex = (lbIndex + 1) % list.length;
+    renderLightbox();
+  });
+
   /* ---------- INIT ---------- */
   loadCalendar();
 })();
