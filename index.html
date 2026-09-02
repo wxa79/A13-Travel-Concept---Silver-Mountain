@@ -5,10 +5,394 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A13 Travel Concept — Cazare Poiana Brașov, Silver Mountain | Rezervări online</title>
 <meta name="description" content="Apartament în regim hotelier la Silver Mountain, Poiana Brașov. 800 RON/noapte, 2 dormitoare cu baie privată, vedere panoramică la munte. Verifică disponibilitatea și rezervă online.">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<style>
+  :root{
+    --blue-dark:#003580;
+    --blue-mid:#0071c2;
+    --blue-hover:#00224f;
+    --yellow:#febb02;
+    --yellow-dark:#e0a800;
+    --bg:#f5f5f5;
+    --white:#ffffff;
+    --ink:#262626;
+    --gray:#6b6b6b;
+    --line:#e7e7e7;
+    --green:#008009;
+    --red:#c94545;
+    --radius:8px;
+    --shadow:0 2px 6px rgba(0,0,0,.12);
+    --shadow-lg:0 8px 24px rgba(0,0,0,.16);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.5;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
 
+  /* HEADER */
+  header{
+    background:var(--blue-dark);
+    color:var(--white);
+    position:sticky;top:0;z-index:50;
+    box-shadow:var(--shadow);
+  }
+  header .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 20px;
+  }
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;letter-spacing:.2px;min-width:0;flex:none;}
+  .logo-mark{
+    width:32px;height:32px;border-radius:8px;
+    background:var(--yellow);color:var(--blue-dark);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:.85rem;flex:none;
+  }
+  .logo-text{white-space:nowrap;}
+  .logo .place{font-weight:400;font-size:.72rem;color:#cfe0f5;display:block;margin-top:1px;white-space:normal;}
+
+  .header-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 20px;gap:14px;
+  }
+  .main-nav{display:none;}
+  @media(min-width:920px){
+    .main-nav{
+      display:flex;gap:22px;flex:1;justify-content:center;
+    }
+    .main-nav a{
+      color:#dbe8fb;font-size:.85rem;font-weight:600;padding:6px 2px;
+      border-bottom:2px solid transparent;
+    }
+    .main-nav a:hover{color:var(--white);border-color:var(--yellow);}
+  }
+
+  .header-right{display:flex;align-items:center;gap:10px;flex:none;}
+  .header-price{
+    display:none;
+    align-items:center;gap:6px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.25);
+    padding:7px 13px;border-radius:999px;
+    font-size:.8rem;white-space:nowrap;color:#dbe8fb;
+  }
+  .header-price .hp-label{color:#a9c4e6;}
+  .header-price b{color:var(--yellow);font-size:.95rem;}
+  @media(min-width:560px){.header-price{display:flex;}}
+
+  .header-cta{display:none;}
+  @media(min-width:640px){
+    .header-cta{
+      display:inline-block;background:var(--yellow);color:var(--blue-dark);
+      font-weight:700;padding:9px 16px;border-radius:6px;font-size:.85rem;
+    }
+    .header-cta:hover{background:var(--yellow-dark);}
+  }
+
+  .menu-toggle{
+    display:flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:6px;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);
+    color:var(--white);cursor:pointer;flex:none;
+  }
+  @media(min-width:920px){.menu-toggle{display:none;}}
+
+  .mobile-nav{
+    display:none;flex-direction:column;
+    background:var(--blue-hover);
+    border-top:1px solid rgba(255,255,255,.15);
+  }
+  .mobile-nav.open{display:flex;}
+  .mobile-nav a{
+    color:#dbe8fb;font-size:.92rem;font-weight:600;
+    padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .mobile-nav a:active{background:rgba(255,255,255,.06);}
+  .mobile-nav-cta{
+    color:var(--blue-dark) !important;background:var(--yellow);
+    text-align:center;font-weight:800 !important;margin:12px 20px 16px;
+    border-radius:6px;border-bottom:none !important;
+  }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,var(--blue-dark) 0%,#00509e 55%,var(--blue-mid) 100%);
+    color:var(--white);
+    padding:56px 0 90px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,.08) 0, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(254,187,2,.10) 0, transparent 45%);
+    pointer-events:none;
+  }
+  .hero .eyebrow{
+    color:var(--yellow);font-weight:700;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:2.4rem;margin:10px 0 6px;font-weight:800;letter-spacing:-.5px;
+  }
+  .hero p.loc{
+    color:#dbe8fb;font-size:1.02rem;margin:0 0 26px;display:flex;align-items:center;gap:6px;
+  }
+  .hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+  .badge{
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);
+    padding:6px 12px;border-radius:999px;font-size:.8rem;
+  }
+
+  /* SEARCH CARD (floating over hero) */
+  .search-card{
+    background:var(--white);color:var(--ink);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-lg);
+    padding:18px;
+    margin-top:26px;
+    display:grid;grid-template-columns:1fr 1fr auto;gap:12px;
+    align-items:end;
+  }
+  @media(max-width:680px){.search-card{grid-template-columns:1fr;}}
+  .field label{display:block;font-size:.72rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+  .field input{
+    width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:6px;
+    font-size:.95rem;color:var(--ink);background:var(--white);
+  }
+  .field input:focus{outline:2px solid var(--blue-mid);outline-offset:1px;border-color:var(--blue-mid);}
+  .field input.field-readonly{cursor:pointer;background:var(--white);}
+  .field input.field-readonly::placeholder{color:#9a9a9a;}
+  .search-hint{
+    color:#dbe8fb;font-size:.78rem;margin:10px 2px 0;text-align:center;
+  }
+  @media(min-width:680px){.search-hint{text-align:left;}}
+  .btn-primary{
+    background:var(--blue-mid);color:var(--white);border:none;
+    padding:12px 22px;border-radius:6px;font-weight:700;font-size:.95rem;cursor:pointer;
+    transition:background .15s ease;
+  }
+  .btn-primary:hover{background:var(--blue-hover);}
+  .btn-primary:focus-visible{outline:3px solid var(--yellow);outline-offset:2px;}
+
+  /* SECTIONS */
+  section{padding:52px 0;}
+  .section-title{font-size:1.6rem;font-weight:800;margin:0 0 6px;color:var(--blue-dark);}
+  .section-sub{color:var(--gray);margin:0 0 28px;font-size:.98rem;}
+
+  /* OVERVIEW / GALLERY */
+  .overview-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;}
+  @media(max-width:800px){.overview-grid{grid-template-columns:1fr;}}
+  .gallery{display:grid;grid-template-columns:2fr 1fr;gap:8px;border-radius:var(--radius);overflow:hidden;height:340px;}
+  .gallery-main{
+    grid-row:1/3;
+    background:linear-gradient(135deg,#274b7a,#3f7ec2 60%,#8fc1ee);
+    display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);
+    font-size:.85rem;font-weight:600;text-align:center;padding:16px;
+  }
+  .gallery-sub{
+    background:linear-gradient(135deg,#0e3866,#1f5a94);
+    display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8);
+    font-size:.78rem;text-align:center;padding:10px;
+  }
+  .gallery-sub:nth-child(3){background:linear-gradient(135deg,#164a80,#2c73b6);}
+
+  .info-card{
+    background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;box-shadow:var(--shadow);
+  }
+  .price-line{
+    display:flex;align-items:baseline;justify-content:space-between;
+    border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px;
+  }
+  .price-line .amount{font-size:1.9rem;font-weight:800;color:var(--blue-dark);}
+  .price-line .amount span{font-size:.9rem;font-weight:500;color:var(--gray);}
+  .rating-pill{
+    background:var(--blue-dark);color:var(--white);font-weight:800;
+    padding:5px 9px;border-radius:6px;font-size:.85rem;display:inline-block;margin-bottom:8px;
+  }
+  .desc{color:var(--ink);font-size:.95rem;margin:14px 0 0;}
+
+  .facil-subtitle{font-size:1.05rem;margin:34px 0 14px;color:var(--ink);}
+  .amenities{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:14px;
+  }
+  .amenity{
+    display:flex;align-items:center;gap:10px;
+    background:var(--white);border:1px solid var(--line);border-radius:8px;
+    padding:12px;font-size:.86rem;font-weight:600;
+  }
+  .amenity svg{flex:none;color:var(--blue-mid);}
+
+  .facil-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:14px;
+  }
+  .facil-card{
+    background:var(--bg);border:1px solid var(--line);border-radius:8px;
+    padding:4px 16px;
+  }
+  .facil-card summary{
+    cursor:pointer;padding:14px 0;font-weight:700;font-size:.92rem;
+    list-style:none;display:flex;align-items:center;gap:8px;
+  }
+  .facil-card summary::-webkit-details-marker{display:none;}
+  .facil-card summary::after{
+    content:"+";margin-left:auto;color:var(--blue-mid);font-weight:800;font-size:1.1rem;
+  }
+  .facil-card[open] summary::after{content:"–";}
+  .facil-card ul{
+    margin:0 0 14px;padding-left:18px;color:var(--gray);font-size:.86rem;
+  }
+  .facil-card li{margin-bottom:6px;}
+  .facil-card em{color:var(--yellow-dark);font-style:normal;font-size:.8rem;}
+
+  /* CALENDAR */
+  .calendar-wrap{
+    background:var(--white);border-radius:var(--radius);
+    padding:24px;box-shadow:var(--shadow);
+  }
+  .cal-status{
+    display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--gray);margin-bottom:18px;
+    padding:10px 12px;background:#f0f5fb;border-radius:6px;border:1px solid #dbe7f5;
+  }
+  .cal-status.error{background:#fdf1f1;border-color:#f3d4d4;color:#8a2c2c;}
+  .cal-status .dot{width:8px;height:8px;border-radius:50%;background:var(--blue-mid);flex:none;}
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .cal-nav button{
+    background:var(--white);border:1.5px solid var(--line);border-radius:6px;
+    width:34px;height:34px;cursor:pointer;font-size:1rem;color:var(--blue-dark);font-weight:700;
+  }
+  .cal-nav button:hover{border-color:var(--blue-mid);}
+  .cal-months{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  @media(max-width:720px){.cal-months{grid-template-columns:1fr;}}
+  .cal-month h4{margin:0 0 10px;text-align:center;font-size:1rem;color:var(--blue-dark);text-transform:capitalize;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-grid .dow{font-size:.68rem;color:var(--gray);text-align:center;font-weight:700;padding-bottom:4px;text-transform:uppercase;}
+  .cal-day{
+    aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+    font-size:.82rem;border-radius:6px;cursor:pointer;
+    background:var(--white);border:1px solid transparent;color:var(--ink);
+  }
+  .cal-day.empty{visibility:hidden;cursor:default;}
+  .cal-day.past{color:#c8c8c8;cursor:not-allowed;}
+  .cal-day.booked{
+    background:#fbeaea;color:#c94545;text-decoration:line-through;cursor:not-allowed;
+  }
+  .cal-day.available:hover{border-color:var(--blue-mid);background:#eaf3fc;}
+  .cal-day.selected{background:var(--blue-mid);color:var(--white);font-weight:700;}
+  .cal-day.in-range{background:#cfe6fb;color:var(--blue-dark);}
+  .cal-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:.8rem;color:var(--gray);}
+  .cal-legend span{display:flex;align-items:center;gap:6px;}
+  .swatch{width:13px;height:13px;border-radius:3px;display:inline-block;}
+  .swatch.av{background:var(--white);border:1px solid var(--line);}
+  .swatch.bk{background:#fbeaea;border:1px solid #f0c6c6;}
+  .swatch.sel{background:var(--blue-mid);}
+
+  /* BOOKING FORM */
+  .booking-grid{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;}
+  @media(max-width:880px){.booking-grid{grid-template-columns:1fr;}}
+  form.booking-form{
+    background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;box-shadow:var(--shadow);
+  }
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  @media(max-width:500px){.form-row{grid-template-columns:1fr;}}
+  .form-row.full{grid-template-columns:1fr;}
+  .form-field label{display:block;font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .form-field input{
+    width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:6px;font-size:.92rem;
+  }
+  .form-field input:focus{outline:2px solid var(--blue-mid);outline-offset:1px;border-color:var(--blue-mid);}
+  .form-field input.field-readonly{cursor:pointer;background:var(--bg);}
+  .hint-link{color:var(--blue-mid);font-weight:700;text-decoration:underline;}
+  .calendar-wrap.pulse{}
+  .form-field small{color:var(--gray);font-size:.75rem;}
+  .hint{font-size:.78rem;color:var(--gray);margin-top:-6px;margin-bottom:14px;}
+  .submit-row{margin-top:6px;}
+  .submit-row button{width:100%;padding:14px;font-size:1rem;}
+  .form-msg{margin-top:12px;font-size:.85rem;padding:10px 12px;border-radius:6px;display:none;}
+  .form-msg.show{display:block;}
+  .form-msg.ok{background:#eaf6ea;color:#1e6b1e;border:1px solid #cbe8cb;}
+  .form-msg.warn{background:#fff8e6;color:#8a6600;border:1px solid #f0dfa8;}
+
+  /* SUMMARY CARD */
+  .summary-card{
+    background:var(--blue-dark);color:var(--white);border-radius:var(--radius);
+    padding:22px;position:sticky;top:86px;
+  }
+  .summary-card h3{margin:0 0 16px;font-size:1.05rem;}
+  .summary-row{display:flex;justify-content:space-between;font-size:.88rem;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.15);}
+  .summary-row.total{border-bottom:none;font-weight:800;font-size:1.1rem;padding-top:14px;color:var(--yellow);}
+  .summary-empty{font-size:.85rem;color:#cfe0f5;}
+
+  /* MAP */
+  .map-embed{
+    position:relative;width:100%;padding-bottom:66%;height:0;
+    border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  @media(min-width:640px){.map-embed{padding-bottom:45%;}}
+  @media(min-width:960px){.map-embed{padding-bottom:34%;}}
+  .map-embed iframe{
+    position:absolute;top:0;left:0;width:100%;height:100%;
+  }
+  .map-directions{
+    display:inline-block;margin-top:16px;background:var(--blue-mid);color:var(--white);
+    font-weight:700;font-size:.9rem;padding:11px 20px;border-radius:6px;
+  }
+  .map-directions:hover{background:var(--blue-hover);}
+
+  /* POPUP CALENDAR MODAL */
+  .popup-overlay{
+    display:none;position:fixed;inset:0;z-index:200;
+    background:rgba(9,25,50,.55);
+    align-items:flex-start;justify-content:center;
+    padding:16px;overflow-y:auto;
+  }
+  .popup-overlay.open{display:flex;}
+  .popup-box{
+    background:var(--bg);border-radius:12px;
+    max-width:640px;width:100%;margin:24px 0;
+    box-shadow:var(--shadow-lg);
+    max-height:calc(100vh - 48px);overflow-y:auto;
+  }
+  .popup-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 20px;background:var(--blue-dark);color:var(--white);
+    border-radius:12px 12px 0 0;position:sticky;top:0;z-index:1;
+  }
+  .popup-head h3{margin:0;font-size:1.05rem;}
+  .popup-close{
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    color:var(--white);width:32px;height:32px;border-radius:6px;
+    cursor:pointer;font-size:1rem;line-height:1;
+  }
+  .popup-box .calendar-wrap{box-shadow:none;border-radius:0 0 12px 12px;}
+
+  /* TRUST STRIP */
+  .trust{background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .trust-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;padding:36px 0;}
+  .trust-item{text-align:center;padding:0 10px;}
+  .trust-item svg{color:var(--blue-mid);margin-bottom:10px;}
+  .trust-item h5{margin:0 0 4px;font-size:.92rem;}
+  .trust-item p{margin:0;font-size:.8rem;color:var(--gray);}
+
+  /* FOOTER */
+  footer{background:var(--blue-dark);color:#cfe0f5;padding:40px 0 26px;font-size:.85rem;}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:26px;margin-bottom:26px;}
+  @media(max-width:700px){.footer-grid{grid-template-columns:1fr;}}
+  footer h4{color:var(--white);font-size:.9rem;margin:0 0 12px;}
+  footer .foot-line{margin:0 0 8px;}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.15);padding-top:18px;font-size:.75rem;color:#9fb8d9;}
+</style>
 </head>
 <body>
 
@@ -422,7 +806,349 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  /* ---------- CONFIG ---------- */
+  var PRICE_PER_NIGHT = 800;
+  var CONTACT_EMAIL = "mircea.george.vulcanescu@gmail.com";
+  var BOOKED_JSON = "booked-dates.json"; // generat periodic de update-calendar.js
+
+  var bookedRanges = []; // [{start:Date, end:Date}] end este exclusiv (ca in ICS)
+  var calStatusEl = document.getElementById("calStatus");
+
+  function setStatus(msg, isError){
+    calStatusEl.innerHTML = '<span class="dot"></span> ' + msg;
+    calStatusEl.className = "cal-status" + (isError ? " error" : "");
+  }
+
+  function loadCalendar(){
+    fetch(BOOKED_JSON, {cache:"no-store"})
+      .then(function(res){
+        if(!res.ok) throw new Error("missing");
+        return res.json();
+      })
+      .then(function(data){
+        bookedRanges = (data.ranges || []).map(function(r){
+          return { start:new Date(r.start), end:new Date(r.end) };
+        });
+        var updated = data.updatedAt ? new Date(data.updatedAt).toLocaleString("ro-RO") : null;
+        setStatus(updated ? "Disponibilitate actualizată: " + updated : "Disponibilitate încărcată.", false);
+        renderCalendar();
+      })
+      .catch(function(){
+        setStatus("Nu am găsit fișierul de disponibilitate. Rulează update-calendar.js pentru a-l genera.", true);
+        renderCalendar();
+      });
+  }
+
+  function isDateBooked(date){
+    for(var i=0;i<bookedRanges.length;i++){
+      var r = bookedRanges[i];
+      if(date >= stripTime(r.start) && date < stripTime(r.end)) return true;
+    }
+    return false;
+  }
+
+  function stripTime(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+
+  /* ---------- CALENDAR RENDER ---------- */
+  var today = stripTime(new Date());
+  var viewYear = today.getFullYear();
+  var viewMonth = today.getMonth(); // luna curenta = prima din cele 2 afisate
+
+  var selection = { checkin:null, checkout:null };
+
+  var MONTH_NAMES = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
+  var DOW = ["L","Ma","Mi","J","V","S","D"];
+
+  function buildMonthEl(year, month){
+    var wrap = document.createElement("div");
+    wrap.className = "cal-month";
+    var h4 = document.createElement("h4");
+    h4.textContent = MONTH_NAMES[month] + " " + year;
+    wrap.appendChild(h4);
+
+    var grid = document.createElement("div");
+    grid.className = "cal-grid";
+    DOW.forEach(function(d){
+      var el = document.createElement("div");
+      el.className = "dow"; el.textContent = d;
+      grid.appendChild(el);
+    });
+
+    var firstDay = new Date(year, month, 1);
+    var startOffset = (firstDay.getDay() + 6) % 7; // Luni = 0
+    var daysInMonth = new Date(year, month+1, 0).getDate();
+
+    for(var i=0;i<startOffset;i++){
+      var empty = document.createElement("div");
+      empty.className = "cal-day empty";
+      grid.appendChild(empty);
+    }
+
+    for(var d2=1; d2<=daysInMonth; d2++){
+      var date = new Date(year, month, d2);
+      var cell = document.createElement("div");
+      cell.className = "cal-day";
+      cell.textContent = d2;
+
+      var past = date < today;
+      var booked = isDateBooked(date);
+
+      if(past){
+        cell.classList.add("past");
+      } else if(booked){
+        cell.classList.add("booked");
+      } else {
+        cell.classList.add("available");
+        cell.addEventListener("click", function(dt){
+          return function(){ handleDayClick(dt); };
+        }(date));
+      }
+
+      if(selection.checkin && sameDay(date, selection.checkin)) cell.classList.add("selected");
+      if(selection.checkout && sameDay(date, selection.checkout)) cell.classList.add("selected");
+      if(selection.checkin && selection.checkout && date > selection.checkin && date < selection.checkout){
+        cell.classList.add("in-range");
+      }
+
+      grid.appendChild(cell);
+    }
+
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
+  function sameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+
+  function renderCalendar(){
+    var host = document.getElementById("calMonths");
+    host.innerHTML = "";
+    host.appendChild(buildMonthEl(viewYear, viewMonth));
+    var nextM = viewMonth+1, nextY = viewYear;
+    if(nextM > 11){ nextM = 0; nextY++; }
+    host.appendChild(buildMonthEl(nextY, nextM));
+  }
+
+  function hasBookedBetween(a,b){
+    var d = new Date(a);
+    while(d < b){
+      if(isDateBooked(d)) return true;
+      d.setDate(d.getDate()+1);
+    }
+    return false;
+  }
+
+  function handleDayClick(date){
+    if(!selection.checkin || (selection.checkin && selection.checkout)){
+      selection.checkin = date; selection.checkout = null;
+    } else {
+      if(date <= selection.checkin){
+        selection.checkin = date; selection.checkout = null;
+      } else if(hasBookedBetween(selection.checkin, date)){
+        selection.checkin = date; selection.checkout = null;
+      } else {
+        selection.checkout = date;
+      }
+    }
+    syncFormFromSelection();
+    renderCalendar();
+
+    if(selection.checkin && selection.checkout){
+      setTimeout(function(){
+        closePopup();
+        document.getElementById("rezervare").scrollIntoView({behavior:"smooth", block:"start"});
+      }, 450);
+    }
+  }
+
+  document.getElementById("calPrev").addEventListener("click", function(){
+    viewMonth--; if(viewMonth<0){ viewMonth=11; viewYear--; }
+    renderCalendar();
+  });
+  document.getElementById("calNext").addEventListener("click", function(){
+    viewMonth++; if(viewMonth>11){ viewMonth=0; viewYear++; }
+    renderCalendar();
+  });
+
+  /* ---------- FORM SYNC + PRICE (calendarul este singura sursă de adevăr) ---------- */
+  var inCheckin = document.getElementById("fcheckin");
+  var inCheckout = document.getElementById("fcheckout");
+  var quickCheckin = document.getElementById("quickCheckin");
+  var quickCheckout = document.getElementById("quickCheckout");
+  var summaryBody = document.getElementById("summaryBody");
+  var rangeHint = document.getElementById("rangeHint");
+  var calendarWrap = document.querySelector(".calendar-wrap");
+  var popupOverlay = document.getElementById("popupOverlay");
+  var popupClose = document.getElementById("popupClose");
+  var openCalBtn = document.getElementById("openCalBtn");
+
+  function fmtDate(d){
+    return d.toLocaleDateString("ro-RO", { day:"2-digit", month:"short", year:"numeric" });
+  }
+  function toInputValue(d){
+    var mm = (d.getMonth()+1+"").padStart(2,"0");
+    var dd = (d.getDate()+"").padStart(2,"0");
+    return d.getFullYear()+"-"+mm+"-"+dd;
+  }
+
+  function openPopup(){
+    popupOverlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    renderCalendar();
+  }
+  function closePopup(){
+    popupOverlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  [quickCheckin, quickCheckout, inCheckin, inCheckout].forEach(function(el){
+    el.addEventListener("click", openPopup);
+    el.addEventListener("focus", openPopup);
+  });
+  document.getElementById("quickCheckBtn").addEventListener("click", openPopup);
+  openCalBtn.addEventListener("click", openPopup);
+  popupClose.addEventListener("click", closePopup);
+  popupOverlay.addEventListener("click", function(e){
+    if(e.target === popupOverlay) closePopup();
+  });
+  rangeHint.addEventListener("click", function(e){
+    if(e.target.tagName === "A"){ e.preventDefault(); openPopup(); }
+  });
+
+  function syncFormFromSelection(){
+    quickCheckin.value = selection.checkin ? fmtDate(selection.checkin) : "";
+    quickCheckin.dataset.iso = selection.checkin ? toInputValue(selection.checkin) : "";
+    quickCheckout.value = selection.checkout ? fmtDate(selection.checkout) : "";
+    quickCheckout.dataset.iso = selection.checkout ? toInputValue(selection.checkout) : "";
+
+    inCheckin.value = selection.checkin ? fmtDate(selection.checkin) : "";
+    inCheckin.dataset.iso = selection.checkin ? toInputValue(selection.checkin) : "";
+    inCheckout.value = selection.checkout ? fmtDate(selection.checkout) : "";
+    inCheckout.dataset.iso = selection.checkout ? toInputValue(selection.checkout) : "";
+
+    updateSummary();
+  }
+
+  function updateSummary(){
+    var ci = selection.checkin, co = selection.checkout;
+
+    if(!ci || !co || co <= ci){
+      summaryBody.innerHTML = '<p class="summary-empty">Alege datele de check-in și check-out pentru a vedea prețul total.</p>';
+      rangeHint.innerHTML = 'Alege datele direct din <a href="#disponibilitate" class="hint-link">calendarul de disponibilitate</a> de mai sus — zilele ocupate sunt blocate automat.';
+      rangeHint.style.color = "";
+      return;
+    }
+
+    var nights = Math.round((co - ci) / 86400000);
+    var conflict = hasBookedBetween(ci, co);
+
+    var total = nights * PRICE_PER_NIGHT;
+    summaryBody.innerHTML =
+      '<div class="summary-row"><span>Check-in</span><span>' + fmtDate(ci) + '</span></div>' +
+      '<div class="summary-row"><span>Check-out</span><span>' + fmtDate(co) + '</span></div>' +
+      '<div class="summary-row"><span>' + nights + ' nopți × 800 RON</span><span>' + total + ' RON</span></div>' +
+      '<div class="summary-row total"><span>Total</span><span>' + total + ' RON</span></div>';
+
+    if(conflict){
+      rangeHint.textContent = "Atenție: intervalul selectat include zile deja ocupate. Alege alte date.";
+      rangeHint.style.color = "var(--red)";
+    } else {
+      rangeHint.textContent = nights + " nopți selectate — total " + total + " RON.";
+      rangeHint.style.color = "var(--green)";
+    }
+  }
+
+  syncFormFromSelection();
+
+  /* ---------- SUBMIT (mailto) ---------- */
+  document.getElementById("bookingForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var name = document.getElementById("fname").value.trim();
+    var phone = document.getElementById("fphone").value.trim();
+    var email = document.getElementById("femail").value.trim();
+    var ciDate = selection.checkin, coDate = selection.checkout;
+    var msgEl = document.getElementById("formMsg");
+
+    if(!name || !phone || !email || !ciDate || !coDate){
+      msgEl.textContent = "Completează toate câmpurile și alege datele din calendar pentru a trimite solicitarea.";
+      msgEl.className = "form-msg show warn";
+      return;
+    }
+    if(coDate <= ciDate){
+      msgEl.textContent = "Data de check-out trebuie să fie după data de check-in.";
+      msgEl.className = "form-msg show warn";
+      return;
+    }
+    if(hasBookedBetween(ciDate, coDate)){
+      msgEl.textContent = "Intervalul selectat include zile deja ocupate. Te rugăm alege alte date.";
+      msgEl.className = "form-msg show warn";
+      return;
+    }
+
+    var ci = toInputValue(ciDate), co = toInputValue(coDate);
+    var nights = Math.round((coDate - ciDate) / 86400000);
+    var total = nights * PRICE_PER_NIGHT;
+
+    var subject = "Solicitare rezervare A13 Travel Concept — " + ci + " → " + co;
+    var body =
+      "Solicitare nouă de rezervare — A13 Travel Concept (Silver Mountain, Poiana Brașov)\n\n" +
+      "Nume: " + name + "\n" +
+      "Telefon: " + phone + "\n" +
+      "Email: " + email + "\n\n" +
+      "Check-in: " + ci + "\n" +
+      "Check-out: " + co + "\n" +
+      "Nopți: " + nights + "\n" +
+      "Preț/noapte: " + PRICE_PER_NIGHT + " RON\n" +
+      "Total: " + total + " RON\n";
+
+    var mailto = "mailto:" + CONTACT_EMAIL +
+      "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(body);
+
+    window.location.href = mailto;
+
+
+    msgEl.textContent = "Se deschide clientul tău de email cu solicitarea precompletată către " + CONTACT_EMAIL + ". Trimite mesajul pentru a finaliza cererea.";
+    msgEl.className = "form-msg show ok";
+  });
+
+  /* ---------- MOBILE MENU ---------- */
+  var menuToggle = document.getElementById("menuToggle");
+  var mobileNav = document.getElementById("mobileNav");
+  menuToggle.addEventListener("click", function(){
+    var open = mobileNav.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+
+  /* ---------- SMOOTH SCROLL NAV (evita navigarea de pagina la #hash) ---------- */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener("click", function(e){
+      var id = a.getAttribute("href").slice(1);
+      var target = document.getElementById(id);
+      if(target){
+        e.preventDefault();
+        e.stopPropagation();
+        if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+        mobileNav.classList.remove("open");
+        menuToggle.setAttribute("aria-expanded", "false");
+        if(id === "disponibilitate"){
+          openPopup();
+          return;
+        }
+        target.scrollIntoView({behavior:"smooth", block:"start"});
+      }
+    }, true);
+  });
+
+  /* ---------- INIT ---------- */
+  loadCalendar();
+})();
+</script>
 
 </body>
 </html>
